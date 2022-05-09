@@ -22,7 +22,11 @@
 #include "smbios_c/compat.h"
 
 // system
+#if defined(__i386__) || defined(__x86_64__)
 #include <sys/io.h>
+#else
+#include "io.h"
+#endif
 #include <stdlib.h>
 #include <errno.h>
 
@@ -57,8 +61,10 @@ int __hidden init_cmos_struct(struct cmos_access_obj *m)
     int retval = 0;
 
     fnprintf("\n");
+#if defined(__i386__) || defined(__x86_64__)
     if(iopl(3) < 0)
         goto out_noprivs;
+#endif
 
     m->read_fn = linux_read_fn;
     m->write_fn = linux_write_fn;
